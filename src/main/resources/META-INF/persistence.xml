@@ -3,5 +3,32 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd"
              version="2.2">
+    <persistence-unit name="PERSISTENCE" transaction-type="RESOURCE_LOCAL">
+        <description>Hibernate JPA Configuration Example</description>
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
+            <!-- https://www.cyberforum.ru/java-database/thread1967034.html -->
+            <!-- https://stackoverflow.com/questions/39074967/jpa-and-server-time-zone-error -->
+
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/hibernate
+            "/>
+<!--            ?serverTimezone=UTC"/>-->
+<!--            ?useLegacyDatetimeCode=false&amp;serverTimezone=UTC"/>-->
+<property name="javax.persistence." value=""/>
+            <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+            <property name="javax.persistence.jdbc.user" value="admin_db"/>
+            <property name="javax.persistence.jdbc.password" value="password"/>
+<!--            <property name="hibernate.jdbc.time_zone" value="UTC"/>-->
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.connection.charSet" value="UTF-8"/>
+            <property name="hibernate.flushMode" value="ALWAYS"/>
+            <property name="hibernate.cache.use_second_level_cache" value="false"/>
+            <property name="hibernate.cache.provider_class"
+                      value="org.hibernate.cache.NoCacheRegionFactoryAvailableException"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+        </properties>
+    </persistence-unit>
 </persistence>
