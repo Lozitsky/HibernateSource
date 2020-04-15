@@ -22,12 +22,13 @@ show tables;
 drop table if exists book;
 CREATE TABLE book
 (
-    id        bigint(20)   not null auto_increment,
+    id        bigint(20)   not null auto_increment primary key,
     author_id bigint(20)   not null,
     name      varchar(255) not null,
-    primary key (id, author_id),
+#     primary key (id, author_id),
 #     KEY `fk_autor_id_idx` (`author_id`),
 #     CONSTRAINT `fk_autor_id` FOREIGN KEY (`author_id`) REFERENCES `author` (`id`)
+#     index aut_ind (author_id),
     foreign key (author_id)
         references author (id)
         ON UPDATE RESTRICT ON DELETE CASCADE

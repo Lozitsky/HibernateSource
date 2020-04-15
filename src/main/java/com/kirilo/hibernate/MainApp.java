@@ -3,6 +3,8 @@ package com.kirilo.hibernate;
 import javax.persistence.EntityManager;
 
 // https://www.boraji.com/hibernate-5-jpa-2-configuration-example
+// https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#architecture
+
 public class MainApp {
     public static void main(String[] args) {
         EntityManager entityManager = JPAUtil.getEntityManagerFactory().createEntityManager();

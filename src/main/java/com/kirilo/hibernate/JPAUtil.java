@@ -3,6 +3,8 @@ package com.kirilo.hibernate;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+// https://www.boraji.com/hibernate-5-jpa-2-configuration-example
+
 public class JPAUtil {
     private static final String PERSISTENCE_UNIT_NAME = "PERSISTENCE";
     private static EntityManagerFactory factory;
