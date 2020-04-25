@@ -67,4 +67,14 @@ public class Author {
     public void setBooksById(Collection<Book> booksById) {
         this.booksById = booksById;
     }
+
+    @Override
+    public String toString() {
+        return "Author{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", secondName='" + secondName + '\'' +
+                ", booksById=" + booksById +
+                '}';
+    }
 }
