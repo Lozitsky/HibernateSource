@@ -45,7 +45,8 @@ public class Book {
         return Objects.hash(id, name);
     }
 
-    @ManyToOne
+//    https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#collections-customizing-ordered-by-sql-clause
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", referencedColumnName = "id", nullable = false)
     public Author getAuthorByAuthorId() {
         return authorByAuthorId;

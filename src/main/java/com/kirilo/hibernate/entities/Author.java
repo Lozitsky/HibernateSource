@@ -1,7 +1,7 @@
 package com.kirilo.hibernate.entities;
 
 import javax.persistence.*;
-import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 // https://dev.mysql.com/doc/refman/8.0/en/create-table-foreign-keys.html
@@ -12,7 +12,7 @@ public class Author {
     private long id;
     private String name;
     private String secondName;
-    private Collection<Book> booksById;
+    private List<Book> booksById;
 
     @Id
     @Column(name = "id", nullable = false)
@@ -60,11 +60,11 @@ public class Author {
     }
 
     @OneToMany(mappedBy = "authorByAuthorId")
-    public Collection<Book> getBooksById() {
+    public List<Book> getBooksById() {
         return booksById;
     }
 
-    public void setBooksById(Collection<Book> booksById) {
+    public void setBooksById(List<Book> booksById) {
         this.booksById = booksById;
     }
 
@@ -74,7 +74,7 @@ public class Author {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", secondName='" + secondName + '\'' +
-                ", booksById=" + booksById +
+//                ", booksById=" + booksById +
                 '}';
     }
 }
