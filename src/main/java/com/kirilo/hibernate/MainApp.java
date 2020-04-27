@@ -17,22 +17,46 @@ public class MainApp {
     private static final Logger LOG = Logger.getLogger(MainApp.class);
 
     public static void main(String[] args) {
-        try (AbstractHelper<Author> authorHelper = new AuthorHelper()) {
-            final List<Author> authorList = authorHelper.getEntityList();
-            authorList.forEach(LOG::warn);
+
+        //---------------------------Author Persistent Object----------------------------------------------------------------------------
+        try (AuthorHelper authorHelper = new AuthorHelper()) {
+
+//            authorHelper.addAuthor(authorHelper.createAuthor("FirstName", "LastName"));
+
+            //        get list of Authors
+            GetAndPrintListOfAuthors(authorHelper);
+
+            final Author author = authorHelper.getAuthor(12L);
+            author.setName("ChangedName2");
+            authorHelper.updateAuthor(author);
+
+            GetAndPrintListOfAuthors(authorHelper);
+
         } catch (CloseEntityManagerException e) {
             e.printStackTrace();
         }
+        //-------------------------------------------------------------------------------------------------------
 
-//        https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#collections-customizing-ordered-by-sql-clause
+        //---------------------------Book Persistent Object----------------------------------------------------------------------------
+        //        https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#collections-customizing-ordered-by-sql-clause
         try (AbstractHelper<Book> bookHelper = new BookHelper()) {
+            //        get list of Books
             final List<Book> bookList = bookHelper.getEntityList();
             bookList.forEach(LOG::warn/*book -> LOG.log(Level.WARN, book)*/);
 
         } catch (CloseEntityManagerException e) {
             e.printStackTrace();
         }
-// close EntityManagerFactory
+        //-------------------------------------------------------------------------------------------------------
+
+
+        // close EntityManagerFactory
         JPAUtil.shutdown();
     }
+
+    private static void GetAndPrintListOfAuthors(AuthorHelper authorHelper) {
+        final List<Author> authorList = authorHelper.getEntityList();
+        authorList.forEach(LOG::warn);
+    }
+
 }

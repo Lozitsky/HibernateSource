@@ -19,7 +19,9 @@ public abstract class AbstractHelper<T> implements EntityHelper<T>, AutoCloseabl
 
 
     public EntityManager getEntityManager(){
-        entityManager = entityManagerFactory.createEntityManager();
+        if (entityManager == null) {
+            entityManager = entityManagerFactory.createEntityManager();
+        }
         return entityManager;
     }
 

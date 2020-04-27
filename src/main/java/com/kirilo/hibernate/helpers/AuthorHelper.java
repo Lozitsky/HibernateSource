@@ -20,9 +20,9 @@ public class AuthorHelper extends AbstractHelper<Author> {
     @Override
     public List<Author> getEntityList() {
         final EntityManager entityManager = getEntityManager();
-        entityManager.getTransaction().begin();
+//        entityManager.getTransaction().begin();
 //        final Author reference =
-                entityManager.getReference(Author.class, 1L);
+        entityManager.getReference(Author.class, 1L);
 //        System.out.println(reference);
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<Author> criteriaQuery = criteriaBuilder.createQuery(Author.class);
@@ -36,9 +36,38 @@ public class AuthorHelper extends AbstractHelper<Author> {
 //        criteriaQuery.where(criteriaBuilder.equal(root.get(Author_.name), "John"));
         final List<Author> authors = entityManager.createQuery(criteriaQuery).getResultList();
 
-        entityManager.getTransaction().commit();
+//        entityManager.getTransaction().commit();
 
         return authors;
     }
 
+    public Author addAuthor(Author author) {
+        final EntityManager entityManager = getEntityManager();
+        entityManager.getTransaction().begin();
+        entityManager.persist(author);
+        entityManager.getTransaction().commit();
+
+        return author;
+    }
+
+    public Author createAuthor(String firstName, String lastName) {
+        final Author author = new Author();
+        author.setName(firstName);
+        author.setSecondName(lastName);
+        return author;
+    }
+
+    public Author getAuthor(Long id) {
+        final EntityManager entityManager = getEntityManager();
+        final Author author = entityManager.getReference(Author.class, id);
+        return author;
+    }
+
+    //    https://kodejava.org/how-do-i-update-entity-object-using-jpa/
+    public void updateAuthor(Author author) {
+        final EntityManager entityManager = getEntityManager();
+        entityManager.getTransaction().begin();
+        entityManager.merge(author);
+        entityManager.getTransaction().commit();
+    }
 }
