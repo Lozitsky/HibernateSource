@@ -1,6 +1,8 @@
 package com.kirilo.hibernate;
 
 import com.kirilo.hibernate.exceptions.CloseEntityManagerFactoryException;
+import org.apache.log4j.Logger;
+
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -9,6 +11,7 @@ import javax.persistence.Persistence;
 
 public class JPAUtil implements AutoCloseable {
     private static final String PERSISTENCE_UNIT_NAME = "PERSISTENCE";
+    private static final Logger LOG = Logger.getLogger(JPAUtil.class);
     private static EntityManagerFactory factory;
 
     public static EntityManagerFactory getEntityManagerFactory() {
@@ -19,7 +22,7 @@ public class JPAUtil implements AutoCloseable {
     }
 
     public static void shutdown() {
-        System.out.println("EntityManagerFactory closed!");
+        LOG.debug("EntityManagerFactory closed!");
         if (factory != null) {
             factory.close();
         }

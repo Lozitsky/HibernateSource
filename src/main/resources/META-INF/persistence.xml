@@ -27,7 +27,7 @@
             <!--            default-time-zone=+02:00 in my.ini -->
             <!--            <property name="hibernate.jdbc.time_zone" value="UTC"/> -->
             <!--            https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#configurations -->
-            <property name="hibernate.show_sql" value="true"/>
+<!--            <property name="hibernate.show_sql" value="true"/>-->
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.current_session_context_class" value="thread"/>
             <property name="hibernate.connection.charSet" value="UTF-8"/>

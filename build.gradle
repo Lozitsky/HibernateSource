@@ -50,6 +50,9 @@ dependencies {
             'mysql:mysql-connector-java:8.0.19',
             'org.projectlombok:lombok:+',
             'javax:javaee-api:7.0')
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12
+//    testCompile
+    compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.30'
 
     testImplementation 'junit:junit:4.12'
 }
