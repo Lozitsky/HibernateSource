@@ -22,16 +22,10 @@ public class MainApp {
         try (AuthorHelper authorHelper = new AuthorHelper()) {
 
 //            authorHelper.addAuthor(authorHelper.createAuthor("FirstName", "LastName"));
-
-            //        get list of Authors
-            GetAndPrintListOfAuthors(authorHelper);
-
-            final Author author = authorHelper.getAuthor(12L);
-            author.setName("ChangedName2");
-            authorHelper.updateAuthor(author);
-
-            GetAndPrintListOfAuthors(authorHelper);
-
+//            testUpdate(authorHelper);
+//            authorHelper.generateAndAddAuthors(200);
+            final List<Author> authorListWithParam = authorHelper.getAuthorListWithParam("id", "name");
+            printList(authorListWithParam);
         } catch (CloseEntityManagerException e) {
             e.printStackTrace();
         }
@@ -54,8 +48,23 @@ public class MainApp {
         JPAUtil.shutdown();
     }
 
+    private static void testUpdate(AuthorHelper authorHelper) {
+        //        get list of Authors
+        GetAndPrintListOfAuthors(authorHelper);
+
+        final Author author = authorHelper.getAuthor(12L);
+        author.setName("ChangedName2");
+        authorHelper.updateAuthor(author);
+
+        GetAndPrintListOfAuthors(authorHelper);
+    }
+
     private static void GetAndPrintListOfAuthors(AuthorHelper authorHelper) {
         final List<Author> authorList = authorHelper.getEntityList();
+        printList(authorList);
+    }
+
+    private static void printList(List<Author> authorList) {
         authorList.forEach(LOG::warn);
     }
 

@@ -3,9 +3,8 @@ package com.kirilo.hibernate.helpers;
 import com.kirilo.hibernate.entities.Author;
 
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
 import java.util.List;
 
 // https://www.boraji.com/hibernate-5-jpa-2-configuration-example
@@ -22,7 +21,7 @@ public class AuthorHelper extends AbstractHelper<Author> {
         final EntityManager entityManager = getEntityManager();
 //        entityManager.getTransaction().begin();
 //        final Author reference =
-        entityManager.getReference(Author.class, 1L);
+//        entityManager.getReference(Author.class, 1L);
 //        System.out.println(reference);
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<Author> criteriaQuery = criteriaBuilder.createQuery(Author.class);
@@ -50,8 +49,42 @@ public class AuthorHelper extends AbstractHelper<Author> {
         return author;
     }
 
+    public List<Author> getAuthorListWithParam(String... params) {
+        final EntityManager entityManager = getEntityManager();
+        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        final CriteriaQuery<Author> criteriaQuery = criteriaBuilder.createQuery(Author.class);
+        final Root<Author> root = criteriaQuery.from(Author.class);
+        Selection[] selections = new Selection[params.length];
+        for (int i = 0; i < params.length; i++) {
+//            final Path<Object> objectPath = root.get(params[i]);
+            selections[i] = root.get(params[i]);
+        }
+        criteriaQuery.select(criteriaBuilder.construct(Author.class, selections));
+        final TypedQuery<Author> query = entityManager.createQuery(criteriaQuery);
+        return query.getResultList();
+    }
+
+    public boolean generateAndAddAuthors(int count) {
+        final EntityManager entityManager = getEntityManager();
+        entityManager.getTransaction().begin();
+
+        for (int i = 0; i < count; i++) {
+//            Author author = createAuthor("FirstName_" + i, "LastName_" + i);
+            Author author = new Author();
+            author.setName("FirstName_" + i);
+            author.setSecondName("LastName_" + i);
+            if (i % 20 == 0) {
+                entityManager.flush();
+            }
+            entityManager.persist(author);
+        }
+
+        entityManager.getTransaction().commit();
+        return true;
+    }
+
     public Author createAuthor(String firstName, String lastName) {
-        final Author author = new Author();
+        Author author = new Author();
         author.setName(firstName);
         author.setSecondName(lastName);
         return author;
@@ -70,4 +103,6 @@ public class AuthorHelper extends AbstractHelper<Author> {
         entityManager.merge(author);
         entityManager.getTransaction().commit();
     }
+
+
 }

@@ -12,14 +12,26 @@ import java.util.Objects;
 
 @Entity
 @DynamicUpdate
-//@DynamicInsert
+@DynamicInsert
 public class Author {
     private long id;
     private String name;
     private String secondName;
     private List<Book> booksById;
 
+    public Author() {
+    }
+
+    public Author(long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     @Id
+    @GeneratedValue(
+//            strategy = GenerationType.SEQUENCE
+            strategy = GenerationType.IDENTITY
+    )
     @Column(name = "id", nullable = false)
     public long getId() {
         return id;
@@ -29,7 +41,7 @@ public class Author {
         this.id = id;
     }
 
-    @Basic
+//    @Basic
     @Column(name = "name", nullable = false, length = 255)
     public String getName() {
         return name;
@@ -39,7 +51,7 @@ public class Author {
         this.name = name;
     }
 
-    @Basic
+//    @Basic
     @Column(name = "second_name", nullable = true, length = 255)
     public String getSecondName() {
         return secondName;

@@ -48,7 +48,7 @@ dependencies {
             'dom4j:dom4j:1.6.1',
             'org.javassist:javassist:3.27.0-GA',
             'mysql:mysql-connector-java:8.0.19',
-            'org.projectlombok:lombok:+',
+//            'org.projectlombok:lombok:+',
             'javax:javaee-api:7.0')
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12
 //    testCompile
