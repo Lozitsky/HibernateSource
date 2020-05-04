@@ -1,6 +1,7 @@
 package com.kirilo.hibernate;
 
 import com.kirilo.hibernate.entities.Author;
+import com.kirilo.hibernate.entities.Author_;
 import com.kirilo.hibernate.entities.Book;
 import com.kirilo.hibernate.exceptions.CloseEntityManagerException;
 import com.kirilo.hibernate.helpers.AbstractHelper;
@@ -24,7 +25,13 @@ public class MainApp {
 //            authorHelper.addAuthor(authorHelper.createAuthor("FirstName", "LastName"));
 //            testUpdate(authorHelper);
 //            authorHelper.generateAndAddAuthors(200);
-            final List<Author> authorListWithParam = authorHelper.getAuthorListWithParam("id", "name");
+//            final List<Author> authorListWithParam = authorHelper.getAuthorListWithParam("id", "name");
+
+//            https://docs.jboss.org/hibernate/orm/5.0/topical/html/metamodelgen/MetamodelGenerator.html
+//            https://stackoverflow.com/questions/54218556/how-to-generate-jpa-metamodel-with-gradle-5-x
+//            final List<Author> authorListWithParam = authorHelper.getAuthorList(Author_.ID, Author_.NAME);
+            final List<Author> authorListWithParam = authorHelper.getAuthorListForName("M", Author_.ID, Author_.NAME);
+
             printList(authorListWithParam);
         } catch (CloseEntityManagerException e) {
             e.printStackTrace();

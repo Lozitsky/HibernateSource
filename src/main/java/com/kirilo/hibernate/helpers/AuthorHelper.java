@@ -1,6 +1,7 @@
 package com.kirilo.hibernate.helpers;
 
 import com.kirilo.hibernate.entities.Author;
+import com.kirilo.hibernate.entities.Author_;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -49,19 +50,38 @@ public class AuthorHelper extends AbstractHelper<Author> {
         return author;
     }
 
-    public List<Author> getAuthorListWithParam(String... params) {
+    public List<Author> getAuthorList(String... params) {
         final EntityManager entityManager = getEntityManager();
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<Author> criteriaQuery = criteriaBuilder.createQuery(Author.class);
         final Root<Author> root = criteriaQuery.from(Author.class);
-        Selection[] selections = new Selection[params.length];
-        for (int i = 0; i < params.length; i++) {
-//            final Path<Object> objectPath = root.get(params[i]);
-            selections[i] = root.get(params[i]);
-        }
-        criteriaQuery.select(criteriaBuilder.construct(Author.class, selections));
+
+        addSelectToCriteriaQuery(criteriaQuery, criteriaBuilder, root, params);
+
         final TypedQuery<Author> query = entityManager.createQuery(criteriaQuery);
         return query.getResultList();
+    }
+
+    public List<Author> getAuthorListForName(String name, String... params) {
+        final EntityManager entityManager = getEntityManager();
+        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        final CriteriaQuery<Author> criteriaQuery = criteriaBuilder.createQuery(Author.class);
+        final Root<Author> root = criteriaQuery.from(Author.class);
+        final ParameterExpression<String> parameter = criteriaBuilder.parameter(String.class, "name");
+
+        addSelectToCriteriaQuery(criteriaQuery, criteriaBuilder, root, params)
+                .where(criteriaBuilder.like(root.get(Author_.NAME), parameter));
+        final TypedQuery<Author> query = entityManager.createQuery(criteriaQuery);
+        query.setParameter("name", String.format("%%%s%%", name));
+        return query.getResultList();
+    }
+
+    private CriteriaQuery<Author> addSelectToCriteriaQuery(CriteriaQuery<Author> criteriaQuery, CriteriaBuilder criteriaBuilder, Root<Author> root, String[] params) {
+        Selection[] selections = new Selection[params.length];
+        for (int i = 0; i < params.length; i++) {
+            selections[i] = root.get(params[i]);
+        }
+        return criteriaQuery.select(criteriaBuilder.construct(Author.class, selections));
     }
 
     public boolean generateAndAddAuthors(int count) {
