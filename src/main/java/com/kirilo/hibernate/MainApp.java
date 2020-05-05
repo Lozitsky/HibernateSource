@@ -30,9 +30,16 @@ public class MainApp {
 //            https://docs.jboss.org/hibernate/orm/5.0/topical/html/metamodelgen/MetamodelGenerator.html
 //            https://stackoverflow.com/questions/54218556/how-to-generate-jpa-metamodel-with-gradle-5-x
 //            final List<Author> authorListWithParam = authorHelper.getAuthorList(Author_.ID, Author_.NAME);
-            final List<Author> authorListWithParam = authorHelper.getAuthorListForName("M", Author_.ID, Author_.NAME);
-
+            List<Author> authorListWithParam = authorHelper.getAuthorListForName("", Author_.ID, Author_.NAME);
             printList(authorListWithParam);
+
+//            authorHelper.deleteAuthor(203L);
+//            authorHelper.deleteAuthor("_17");
+//            authorHelper.deleteAuthor("_97", "_97", "197");
+            authorHelper.updateNameForLengthMoreThen(12, "FirstName_99+");
+            authorListWithParam = authorHelper.getAuthorListForName("", Author_.ID, Author_.NAME);
+            printList(authorListWithParam);
+
         } catch (CloseEntityManagerException e) {
             e.printStackTrace();
         }

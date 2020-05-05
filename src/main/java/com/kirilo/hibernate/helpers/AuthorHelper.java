@@ -4,6 +4,7 @@ import com.kirilo.hibernate.entities.Author;
 import com.kirilo.hibernate.entities.Author_;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.List;
@@ -13,18 +14,21 @@ import java.util.List;
 
 public class AuthorHelper extends AbstractHelper<Author> {
 
+    private EntityManager entityManager;
+    private CriteriaBuilder criteriaBuilder;
+
     public AuthorHelper() {
         super();
+        entityManager = getEntityManager();
+        criteriaBuilder = entityManager.getCriteriaBuilder();
     }
 
     @Override
     public List<Author> getEntityList() {
-        final EntityManager entityManager = getEntityManager();
 //        entityManager.getTransaction().begin();
 //        final Author reference =
 //        entityManager.getReference(Author.class, 1L);
 //        System.out.println(reference);
-        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<Author> criteriaQuery = criteriaBuilder.createQuery(Author.class);
         final Root<Author> root = criteriaQuery.from(Author.class);
         criteriaQuery.select(root);
@@ -42,7 +46,6 @@ public class AuthorHelper extends AbstractHelper<Author> {
     }
 
     public Author addAuthor(Author author) {
-        final EntityManager entityManager = getEntityManager();
         entityManager.getTransaction().begin();
         entityManager.persist(author);
         entityManager.getTransaction().commit();
@@ -52,7 +55,6 @@ public class AuthorHelper extends AbstractHelper<Author> {
 
     public List<Author> getAuthorList(String... params) {
         final EntityManager entityManager = getEntityManager();
-        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<Author> criteriaQuery = criteriaBuilder.createQuery(Author.class);
         final Root<Author> root = criteriaQuery.from(Author.class);
 
@@ -63,8 +65,6 @@ public class AuthorHelper extends AbstractHelper<Author> {
     }
 
     public List<Author> getAuthorListForName(String name, String... params) {
-        final EntityManager entityManager = getEntityManager();
-        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<Author> criteriaQuery = criteriaBuilder.createQuery(Author.class);
         final Root<Author> root = criteriaQuery.from(Author.class);
         final ParameterExpression<String> parameter = criteriaBuilder.parameter(String.class, "name");
@@ -85,7 +85,6 @@ public class AuthorHelper extends AbstractHelper<Author> {
     }
 
     public boolean generateAndAddAuthors(int count) {
-        final EntityManager entityManager = getEntityManager();
         entityManager.getTransaction().begin();
 
         for (int i = 0; i < count; i++) {
@@ -111,18 +110,80 @@ public class AuthorHelper extends AbstractHelper<Author> {
     }
 
     public Author getAuthor(Long id) {
-        final EntityManager entityManager = getEntityManager();
         final Author author = entityManager.getReference(Author.class, id);
         return author;
     }
 
     //    https://kodejava.org/how-do-i-update-entity-object-using-jpa/
     public void updateAuthor(Author author) {
-        final EntityManager entityManager = getEntityManager();
         entityManager.getTransaction().begin();
         entityManager.merge(author);
         entityManager.getTransaction().commit();
     }
 
+    public void deleteAuthor(Long id) {
+        final Author author = entityManager.find(Author.class, id);
+        if (author != null) {
+            entityManager.getTransaction().begin();
+//        final Author reference = entityManager.getReference(Author.class, id);
+            entityManager.remove(author);
+            entityManager.getTransaction().commit();
+        }
+    }
+
+    public void deleteAuthor(String name) {
+        entityManager.getTransaction().begin();
+        final CriteriaDelete<Author> criteriaDelete = criteriaBuilder.createCriteriaDelete(Author.class);
+        final Root<Author> root = criteriaDelete.from(Author.class);
+        final ParameterExpression<String> parameter = criteriaBuilder.parameter(String.class, "name");
+        criteriaDelete.where(criteriaBuilder.like(root.get(Author_.name), parameter));
+        final Query query = entityManager.createQuery(criteriaDelete);
+        query.setParameter("name", String.format("%%%s%%", name));
+        query.executeUpdate();
+        entityManager.getTransaction().commit();
+    }
+
+    public void deleteAuthor(String name, String lastName, String alternativeName) {
+        entityManager.getTransaction().begin();
+        final CriteriaDelete<Author> criteriaDelete = criteriaBuilder.createCriteriaDelete(Author.class);
+        final Root<Author> root = criteriaDelete.from(Author.class);
+
+        final ParameterExpression<String> parameterName = criteriaBuilder.parameter(String.class, Author_.NAME);
+        final ParameterExpression<String> parameterLastName = criteriaBuilder.parameter(String.class, Author_.SECOND_NAME);
+//        final ParameterExpression<String> parameterAlternativeName = criteriaBuilder.parameter(String.class, Author_.NAME);
+
+        criteriaDelete.where(
+                criteriaBuilder.or(
+                        criteriaBuilder.and(
+                                criteriaBuilder.like(root.get(Author_.name), parameterName),
+                                criteriaBuilder.like(root.get(Author_.secondName), parameterLastName)
+                        ),
+                        criteriaBuilder.like(root.get(Author_.name), alternativeName)
+                )
+        );
+
+        criteriaBuilder.parameter(String.class, Author_.SECOND_NAME);
+        final Query query = entityManager.createQuery(criteriaDelete);
+        query.setParameter(Author_.NAME, String.format("%%%s%%", name));
+        query.setParameter(Author_.SECOND_NAME, String.format("%%%s%%", lastName));
+//        query.setParameter(Author_.NAME, String.format("%%%s%%", alternativeName));
+
+        query.executeUpdate();
+        entityManager.getTransaction().commit();
+    }
+
+    public void updateNameForLengthMoreThen(int first, String name) {
+        entityManager.getTransaction().begin();
+        final CriteriaUpdate<Author> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(Author.class);
+        final Root<Author> root = criteriaUpdate.from(Author.class);
+        final ParameterExpression<String> parameter = criteriaBuilder.parameter(String.class, Author_.NAME);
+        final Expression<Integer> length = criteriaBuilder.length(root.get(Author_.name));
+        criteriaUpdate.set(root.get(Author_.name), parameter).where(criteriaBuilder.greaterThan(length, first));
+        final Query query = entityManager.createQuery(criteriaUpdate);
+        query.setParameter(Author_.NAME, name);
+        query.executeUpdate();
+
+        entityManager.getTransaction().commit();
+    }
 
 }
